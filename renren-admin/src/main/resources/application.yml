@@ -28,6 +28,16 @@ spring:
   messages:
     encoding: UTF-8
     basename: i18n/messages
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: uci.tokenatm@gmail.com
+    password: hqgsyzajzstahszy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
