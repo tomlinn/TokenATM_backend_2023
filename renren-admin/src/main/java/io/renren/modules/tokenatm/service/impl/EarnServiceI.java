@@ -2,6 +2,7 @@ package io.renren.modules.tokenatm.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.opencsv.CSVWriter;
 import io.renren.modules.tokenatm.entity.RequestEntity;
 import io.renren.modules.tokenatm.entity.SpendLogEntity;
 import io.renren.modules.tokenatm.entity.TokenCountEntity;
@@ -19,12 +20,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -1008,6 +1015,40 @@ public class EarnServiceI implements EarnService {
         } else {
             LOGGER.error("Error: Student " + user_id + " does not exist in database");
             return new UpdateTokenResponse("failed", -1);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> exportData() {
+        Iterable<SpendLogEntity> logs = logRepository.findAll();
+        Iterable<TokenCountEntity> tokens = tokenRepository.findAll();
+
+        try {
+            FileWriter fileWriter = new FileWriter("export.csv");
+            CSVWriter csvWriter = new CSVWriter(fileWriter);
+
+            csvWriter.writeNext(new String[]{"Logs"});
+            for (SpendLogEntity log : logs) {
+                csvWriter.writeNext(new String[] {String.valueOf(log.getId()), log.getSource(), String.valueOf(log.getTimestamp()), String.valueOf(log.getTokenCount()), log.getType(), log.getUserId(), log.getUser_name() });
+            }
+            csvWriter.writeNext(new String[]{"Tokens"});
+            for (TokenCountEntity token : tokens) {
+                csvWriter.writeNext(new String[] {token.getUser_id(), token.getUser_name(), token.getUser_email(), String.valueOf(token.getToken_count()), String.valueOf(token.getTimestamp())});
+            }
+            csvWriter.close();
+            fileWriter.close();
+
+            // Return the file as a response
+            File file = new File("export.csv");
+            HttpHeaders headers = new HttpHeaders();
+            headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
+            headers.setContentDispositionFormData("attachment", "users.csv");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+            ResponseEntity<Object> response = new ResponseEntity<Object>(new FileSystemResource(file), headers, HttpStatus.OK);
+            return response;
+        } catch (IOException e) {
+            // Handle the exception
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

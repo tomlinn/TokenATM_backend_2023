@@ -51,6 +51,9 @@ public class TokenCountEntity {
     public void setTimestamp(Date current_time) {
         this.timestamp = current_time;
     }
+    public Date getTimestamp() {
+        return timestamp;
+    }
 
     public void setToken_count(Integer token_count) {
         this.token_count = token_count;

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -110,5 +111,10 @@ public class EarnController {
     @PostMapping("/userid")
     public @ResponseBody RequestUserIdResponse getUserId(@RequestBody RequestUserIdBody body) throws JSONException, IOException {
         return earnService.getUserIdFromEmail(body.getEmail());
+    }
+
+    @GetMapping("/exportall")
+    public ResponseEntity<?> exportData() {
+        return earnService.exportData();
     }
 }

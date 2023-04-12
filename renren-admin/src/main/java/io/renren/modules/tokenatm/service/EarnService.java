@@ -6,6 +6,7 @@ import io.renren.modules.tokenatm.exceptions.BadRequestException;
 import io.renren.modules.tokenatm.service.Beans.AssignmentStatus;
 import io.renren.modules.tokenatm.service.Response.*;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,5 +44,7 @@ public interface EarnService {
     RequestUserIdResponse getUserIdFromEmail(String email) throws JSONException, IOException;
 
     RejectTokenResponse reject_token_use(RequestEntity request) throws JSONException, IOException;
+
+    ResponseEntity<?> exportData();
 }
 
