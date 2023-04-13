@@ -1024,7 +1024,8 @@ public class EarnServiceI implements EarnService {
         Iterable<TokenCountEntity> tokens = tokenRepository.findAll();
 
         try {
-            FileWriter fileWriter = new FileWriter("export.csv");
+            File file = File.createTempFile("export", ".csv");
+            FileWriter fileWriter = new FileWriter(file);
             CSVWriter csvWriter = new CSVWriter(fileWriter);
 
             csvWriter.writeNext(new String[]{"Logs"});
@@ -1038,17 +1039,15 @@ public class EarnServiceI implements EarnService {
             csvWriter.close();
             fileWriter.close();
 
-            // Return the file as a response
-            File file = new File("export.csv");
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
-            headers.setContentDispositionFormData("attachment", "users.csv");
+            headers.setContentDispositionFormData("attachment", "export.csv");
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
             ResponseEntity<Object> response = new ResponseEntity<Object>(new FileSystemResource(file), headers, HttpStatus.OK);
             return response;
         } catch (IOException e) {
             // Handle the exception
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error exporting data");
         }
     }
 }
