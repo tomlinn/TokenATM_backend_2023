@@ -1,7 +1,7 @@
 package io.renren.modules.tokenatm.service;
 
 import io.renren.modules.tokenatm.service.Response.UpdateConfigResponse;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.json.JSONException;
 
 import java.io.IOException;
 

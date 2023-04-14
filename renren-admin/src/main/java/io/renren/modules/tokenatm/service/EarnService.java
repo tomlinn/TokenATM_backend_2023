@@ -5,7 +5,7 @@ import io.renren.modules.tokenatm.entity.TokenCountEntity;
 import io.renren.modules.tokenatm.exceptions.BadRequestException;
 import io.renren.modules.tokenatm.service.Beans.AssignmentStatus;
 import io.renren.modules.tokenatm.service.Response.*;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;

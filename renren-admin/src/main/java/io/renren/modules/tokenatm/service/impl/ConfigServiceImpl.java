@@ -6,7 +6,7 @@ import io.renren.modules.tokenatm.service.ConfigService;
 import io.renren.modules.tokenatm.service.LogRepository;
 import io.renren.modules.tokenatm.service.Response.UpdateConfigResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.json.JSONException;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
