@@ -42,9 +42,18 @@ public class EarnController {
         return earnService.manualSyncTokens();
     }
 
+
     @GetMapping(path="/tokens/{user_id}")
-    public @ResponseBody Integer getTokenForStudent(@PathVariable String user_id) {
-        return earnService.getStudentTokenCount(user_id).get().getToken_count();
+    public @ResponseBody Integer getTokenForStudent(@PathVariable String user_id) throws InternalServerException {
+        Optional<TokenCountEntity> tokenCountEntityOptional = earnService.getStudentTokenCount(user_id);
+        if (!tokenCountEntityOptional.isPresent()) {
+            throw new InternalServerException("Token count not found for user ID: " + user_id);
+        }
+        try {
+            return tokenCountEntityOptional.get().getToken_count();
+        } catch (NumberFormatException e) {
+            throw new InternalServerException("Token count is not an integer for user ID: " + user_id);
+        }
     }
 
     @GetMapping("/grades")
