@@ -1,6 +1,10 @@
 package io.renren.modules.tokenatm.entity;
 
 import javax.persistence.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+
 @Entity
 @Table(name = "Verification")
 public class VerficationEntity {
@@ -12,6 +16,7 @@ public class VerficationEntity {
     private String email;
 
     private String code;
+    private Date expired_date;
 
     public VerficationEntity(String email, String code) {
         this.email = email;
@@ -19,6 +24,15 @@ public class VerficationEntity {
     }
 
     public VerficationEntity() {
+
+    }
+    public VerficationEntity(String email) {
+        this.email = email;
+        this.code = getRandomVerification();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.MINUTE, 15);
+        this.expired_date = cal.getTime();
 
     }
 
@@ -36,5 +50,20 @@ public class VerficationEntity {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+
+    public void setExpiredDate(Date expired_date) {
+        this.expired_date = expired_date;
+    }
+
+    public Date getExpiredDate() {
+        return expired_date;
+    }
+
+    public static String getRandomVerification() {
+        Random random = new Random();
+        int number = random.nextInt(999999);
+        return String.format("%06d", number);
     }
 }
