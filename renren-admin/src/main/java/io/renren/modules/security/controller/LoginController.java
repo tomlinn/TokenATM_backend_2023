@@ -27,6 +27,9 @@ import io.renren.modules.security.user.UserDetail;
 import io.renren.modules.sys.dto.SysUserDTO;
 import io.renren.modules.sys.enums.UserStatusEnum;
 import io.renren.modules.sys.service.SysUserService;
+import io.renren.modules.tokenatm.entity.VerficationEntity;
+import io.renren.modules.tokenatm.service.EmailService;
+import io.renren.modules.tokenatm.service.VerificationRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -40,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -58,6 +62,10 @@ public class LoginController {
 	private CaptchaService captchaService;
 	@Autowired
 	private SysLogLoginService sysLogLoginService;
+	@Autowired
+	EmailService emailService;
+	@Autowired
+	VerificationRepository verificationRepository;
 
 	@GetMapping("captcha")
 	@ApiOperation(value = "验证码", produces="application/octet-stream")
@@ -127,6 +135,40 @@ public class LoginController {
 		sysLogLoginService.save(log);
 
 		return sysUserTokenService.createToken(user.getId());
+	}
+
+	@PostMapping("send_password")
+	public Result sendPassword(HttpServletRequest request, @RequestBody LoginDTO login) {
+
+		SysUserDTO user = sysUserService.getByUsername(login.getUsername());
+
+		// send password
+		String email = login.getUsername();
+		VerficationEntity v = new VerficationEntity(email);
+		emailService.sendSimpleMessage(email,"Your TokenATM temporary password (15 minutes)", v.getCode());
+		verificationRepository.save(v);
+
+		if (user == null) {
+			// create account
+			SysUserDTO dto = new SysUserDTO();
+			dto.setEmail(email);
+			dto.setUsername(email);
+			dto.setPassword(v.getCode());
+			dto.setDeptId(Long.valueOf("1645493288280588290"));
+			dto.setRoleIdList(Collections.singletonList(1644924825577963522L));
+			dto.setRealName("Student");
+			dto.setStatus(1);
+			sysUserService.save(dto);
+		} else {
+			// update password
+			SysUserDTO dto = sysUserService.getByUsername(login.getUsername());
+			sysUserService.updatePassword(dto.getId(), v.getCode());
+		}
+
+		Result result = new Result();
+		result.setCode(0);
+		result.setMsg("Your password has been sent to your email");
+		return result;
 	}
 
 	@PostMapping("logout")
