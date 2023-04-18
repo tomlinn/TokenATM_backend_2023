@@ -60,14 +60,14 @@ public class RequestController {
     }
 
     @PostMapping("/requests/approveall")
-    public ResponseEntity<?> approveAllRequest() throws JSONException, IOException, BadRequestException {
+    public UseTokenResponse approveAllRequest() throws JSONException, IOException, BadRequestException {
         List<RequestEntity> request = requestRepository.findAllByStatusOrderByIdDesc("Pending");
         if (request.size() == 0) {
             throw new BadRequestException("No request is pending for review");
         }
 
         UseTokenResponse tokenResponse = earnService.approve_all_token_use(request);
-        return ResponseEntity.ok(request);
+        return tokenResponse;
     }
 
     @ExceptionHandler(BadRequestException.class)
