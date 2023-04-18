@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 登录
@@ -116,6 +117,12 @@ public class LoginController {
 			sysLogLoginService.save(log);
 
 			throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
+		}
+
+		// Password expired check
+		List<VerficationEntity> v = verificationRepository.findByEmail(login.getUsername());
+		if (!v.isEmpty() && v.get(0).getExpiredDate().before(new Date())) {
+			throw new RenException(ErrorCode.PASSWORD_EXPIRED);
 		}
 
 		//账号停用
