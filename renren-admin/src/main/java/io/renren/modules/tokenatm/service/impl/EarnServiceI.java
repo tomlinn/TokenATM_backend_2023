@@ -1,5 +1,7 @@
 package io.renren.modules.tokenatm.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.opencsv.CSVWriter;
@@ -606,6 +608,16 @@ public class EarnServiceI implements EarnService {
                     logRepository.save(createLog(studentId, studentMap.get(studentId).getName(), "spend(approved)", studentMap.get(studentId).getTokenCount(), assignmentId, resubmissionId));
                 }
                 approvedRequests.add(assignmentId);
+            } else {
+                ObjectMapper mapper = new ObjectMapper();
+                String str_response = response.body().string();
+                String errorMessage = mapper.readTree(str_response)
+                        .path("errors")
+                        .path("assignment_override_students")
+                        .get(0)
+                        .path("message")
+                        .asText();
+                return new UseTokenResponse("failed", errorMessage, 1);
             }
         }
         for (RequestEntity request : requests) {
@@ -703,6 +715,15 @@ public class EarnServiceI implements EarnService {
             String resubmission_id = entity2.getNote();
             Map<String, String> resubmissionsMap = getResubmissionsMap();
             String assignment_id = resubmissionsMap.get(assignment);
+            Date approvedDate = entity2.getTimestamp();
+            Date expiredDate = new Date(approvedDate.getTime() + 24 * 3600 * 1000);
+
+            //
+            if (current_time.after(expiredDate)) {
+                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id));
+                return new CancelTokenResponse("failed", "You can only cancel it within 24 hours", 0);
+            }
+
             // Get user list from a specific resubmissionId
             URL url = UriComponentsBuilder
                     .fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + assignment_id + "/overrides/" + resubmission_id)
@@ -711,13 +732,18 @@ public class EarnServiceI implements EarnService {
                     .addFormDataPart("", "");
             Response response = apiProcess("GET", url, builder.build(), "");
             String str_response = response.body().string();
+            if (response.code() != 200) {
+                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id));
+                return new CancelTokenResponse("failed", new ObjectMapper().readTree(str_response).path("errors").get(0).path("message").asText(), 0);
+            }
+
             JSONArray student_ids = (JSONArray) new JSONObject(str_response).get("student_ids");
 
             // remove target user and update the resubmission
             Integer responseStatus = null;
             if (student_ids != null && student_ids.length() > 1) {
                 for (int i = 0; i < student_ids.length(); i++) {
-                    String student_id = student_ids.getString(i);
+                    String student_id = student_ids.get(i).toString();
                     if (!user_id.equals(student_id)) {
                         builder.addFormDataPart("assignment_override[student_ids][]", student_id);
                     }
@@ -728,7 +754,6 @@ public class EarnServiceI implements EarnService {
             } else {
                 responseStatus = apiProcess("DELETE", url, builder.build());
             }
-
             switch (responseStatus) {
                 case 200:
                     // Update the request status to 'Cancelled'
@@ -835,7 +860,7 @@ public class EarnServiceI implements EarnService {
             JSONArray resultArray = new JSONArray(response);
             for (int i = 0; i < resultArray.length(); i++) {
                 JSONObject submissionObj = resultArray.getJSONObject(i);
-                String submissionUserId = submissionObj.getString("user_id");
+                String submissionUserId = submissionObj.get("user_id").toString();
                 Double score = null;
                 if (submissionUserId.equals(user_id)) {
                     score = submissionObj.isNull("score") ? null : submissionObj.getDouble("score");
@@ -915,10 +940,10 @@ public class EarnServiceI implements EarnService {
         for (int i = 0; i < resultArray.length(); i++) {
             JSONObject submissionObj = resultArray.getJSONObject(i);
             JSONObject assignmentObj = submissionObj.getJSONObject("assignment");
-            String assignmentId = assignmentObj.getString("id");
+            String assignmentId = assignmentObj.get("id").toString();
             Double score = submissionObj.isNull("score") ? null : submissionObj.getDouble("score");
-            String assignmentName = assignmentObj.getString("name");
-            String assignmentDue = assignmentObj.getString("due_at");
+            String assignmentName = assignmentObj.get("name").toString();
+            String assignmentDue = assignmentObj.get("due_at").toString();
             Double assignmentMaxScore = assignmentObj.getDouble("points_possible");
             String resubmissionId = resubmissionsMap.get(assignmentId);
             String resubmissionDue = resubmissionData.get(resubmissionId).get("due_at");
@@ -956,12 +981,12 @@ public class EarnServiceI implements EarnService {
                 .build().toUri().toURL();
         String response = apiProcess(url, "");
         JSONObject responseObj = new JSONObject(response);
-        String dueAt = responseObj.getString("lock_at");
+        String dueAt = responseObj.get("lock_at").toString();
         if (dueAt == null || dueAt.equals("null")) {
             dueAt = "No Due Date";
         }
         double pointsPossible = responseObj.getDouble("points_possible");
-        String name = responseObj.getString("name");
+        String name = responseObj.get("name").toString();
         return new Assignment(assignmentId, name, dueAt, pointsPossible);
     }
 
@@ -979,10 +1004,10 @@ public class EarnServiceI implements EarnService {
 
         for (int i = 0; i < resultArray.length(); i++) {
             JSONObject submissionObj = resultArray.getJSONObject(i);
-            String ResubmissionId = submissionObj.getString("id");
+            String ResubmissionId = submissionObj.get("id").toString();
             Map<String, String> item = resubmissionsIdMap.get(ResubmissionId);
             item.put("id", ResubmissionId);
-            item.put("due_at", submissionObj.getString("lock_at"));
+            item.put("due_at", submissionObj.get("lock_at").toString());
         }
 
         return  resubmissionsIdMap;

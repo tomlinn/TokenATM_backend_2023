@@ -41,18 +41,18 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("sys/log/error")
-@Api(tags="异常日志")
+@Api(tags="Error Log")
 public class SysLogErrorController {
     @Autowired
     private SysLogErrorService sysLogErrorService;
 
     @GetMapping("page")
-    @ApiOperation("分页")
+    @ApiOperation("Page")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
-        @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
-        @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
-        @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
+        @ApiImplicitParam(name = Constant.PAGE, value = "Current page, starting from 1", paramType = "query", required = true, dataType="int") ,
+        @ApiImplicitParam(name = Constant.LIMIT, value = "Records per page", paramType = "query",required = true, dataType="int") ,
+        @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "Order Field", paramType = "query", dataType="String") ,
+        @ApiImplicitParam(name = Constant.ORDER, value = "SortBy(asc、desc)", paramType = "query", dataType="String")
     })
     @RequiresPermissions("sys:log:error")
     public Result<PageData<SysLogErrorDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params){
@@ -62,8 +62,8 @@ public class SysLogErrorController {
     }
 
     @GetMapping("export")
-    @ApiOperation("导出")
-    @LogOperation("导出")
+    @ApiOperation("Export")
+    @LogOperation("Export")
     @RequiresPermissions("sys:log:error")
     public void export(@ApiIgnore @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
         List<SysLogErrorDTO> list = sysLogErrorService.list(params);

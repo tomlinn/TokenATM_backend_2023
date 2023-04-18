@@ -84,7 +84,7 @@ public class QualtricsServiceImpl implements QualtricsService {
                     .build().toUri().toURL();
             String response = apiProcess(url, QualtricsBody);
             JSONObject resultObj = new JSONObject(response).getJSONObject("result");
-            String progressId = resultObj.getString("progressId");
+            String progressId = resultObj.get("progressId").toString();
             ExportResponse exportResponse = null;
             while (true) {
                 exportResponse = getExportStatus(surveyId, progressId);
@@ -126,9 +126,9 @@ public class QualtricsServiceImpl implements QualtricsService {
         return new ExportResponse(
                 resultObj.getDouble("percentComplete") == 0
                         ? ""
-                        : resultObj.getString("fileId"),
+                        : resultObj.get("fileId").toString(),
                 resultObj.getDouble("percentComplete"),
-                resultObj.getString("status"));
+                resultObj.get("status").toString());
     }
 
     private Set<String> getSurveyCompletedEmailAddresses(String surveyId, String fileId) throws IOException, JSONException {
@@ -141,7 +141,7 @@ public class QualtricsServiceImpl implements QualtricsService {
         JSONArray responseList = new JSONObject(response).getJSONArray("responses");
         for (int i = 0; i < responseList.length(); i++) {
             JSONObject responseItem = responseList.getJSONObject(i).getJSONObject("values");
-            String emailAddress = responseItem.getString("EmailAddress");
+            String emailAddress = responseItem.get("EmailAddress").toString();
             completedEmails.add(emailAddress);
         }
         return completedEmails;
