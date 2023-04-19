@@ -21,25 +21,25 @@ import java.util.Date;
  */
 @Data
 public class SysLogOperationExcel {
-    @Excel(name = "用户操作")
+    @Excel(name = "Operation")
     private String operation;
-    @Excel(name = "请求URI")
+    @Excel(name = "Request URI")
     private String requestUri;
-    @Excel(name = "请求方式")
+    @Excel(name = "Request Method")
     private String requestMethod;
-    @Excel(name = "请求参数")
+    @Excel(name = "Request Params")
     private String requestParams;
-    @Excel(name = "请求时长(毫秒)")
+    @Excel(name = "Request duration (milliseconds)")
     private Integer requestTime;
     @Excel(name = "User-Agent")
     private String userAgent;
-    @Excel(name = "操作IP")
+    @Excel(name = "IP")
     private String ip;
-    @Excel(name = "状态", replace = {"失败_0", "成功_1"})
+    @Excel(name = "Status", replace = {"Failed_0", "Success_1"})
     private Integer status;
-    @Excel(name = "用户名")
+    @Excel(name = "Username")
     private String creatorName;
-    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "Create Date", format = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
 }

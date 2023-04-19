@@ -33,13 +33,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sys/dept")
-@Api(tags="部门管理")
+@Api(tags="group_mgt")
 public class SysDeptController {
 	@Autowired
 	private SysDeptService sysDeptService;
 
 	@GetMapping("list")
-	@ApiOperation("列表")
+	@ApiOperation("list")
 	@RequiresPermissions("sys:dept:list")
 	public Result<List<SysDeptDTO>> list(){
 		List<SysDeptDTO> list = sysDeptService.list(new HashMap<>(1));
@@ -48,7 +48,7 @@ public class SysDeptController {
 	}
 
 	@GetMapping("{id}")
-	@ApiOperation("信息")
+	@ApiOperation("info")
 	@RequiresPermissions("sys:dept:info")
 	public Result<SysDeptDTO> get(@PathVariable("id") Long id){
 		SysDeptDTO data = sysDeptService.get(id);
@@ -57,8 +57,8 @@ public class SysDeptController {
 	}
 
 	@PostMapping
-	@ApiOperation("保存")
-	@LogOperation("保存")
+	@ApiOperation("save")
+	@LogOperation("save")
 	@RequiresPermissions("sys:dept:save")
 	public Result save(@RequestBody SysDeptDTO dto){
 		//效验数据
@@ -70,8 +70,8 @@ public class SysDeptController {
 	}
 
 	@PutMapping
-	@ApiOperation("修改")
-	@LogOperation("修改")
+	@ApiOperation("update")
+	@LogOperation("update")
 	@RequiresPermissions("sys:dept:update")
 	public Result update(@RequestBody SysDeptDTO dto){
 		//效验数据
@@ -83,8 +83,8 @@ public class SysDeptController {
 	}
 
 	@DeleteMapping("{id}")
-	@ApiOperation("删除")
-	@LogOperation("删除")
+	@ApiOperation("delete")
+	@LogOperation("delete")
 	@RequiresPermissions("sys:dept:delete")
 	public Result delete(@PathVariable("id") Long id){
 		//效验数据

@@ -22,15 +22,15 @@ import java.io.Serializable;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "修改密码")
+@ApiModel(value = "Change Password")
 public class PasswordDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "原密码")
+    @ApiModelProperty(value = "Original Password")
     @NotBlank(message="{sysuser.password.require}")
     private String password;
 
-    @ApiModelProperty(value = "新密码")
+    @ApiModelProperty(value = "New Password")
     @NotBlank(message="{sysuser.password.require}")
     private String newPassword;
 

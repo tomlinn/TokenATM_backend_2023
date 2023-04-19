@@ -30,7 +30,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "角色管理")
+@ApiModel(value = "Role_mgt")
 public class SysRoleDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -39,21 +39,21 @@ public class SysRoleDTO implements Serializable {
 	@NotNull(message="{id.require}", groups = UpdateGroup.class)
 	private Long id;
 
-	@ApiModelProperty(value = "角色名称")
+	@ApiModelProperty(value = "Role Name")
 	@NotBlank(message="{sysrole.name.require}", groups = DefaultGroup.class)
 	private String name;
 
-	@ApiModelProperty(value = "备注")
+	@ApiModelProperty(value = "Remark")
 	private String remark;
 
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "Create Date")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Date createDate;
 
-	@ApiModelProperty(value = "菜单ID列表")
+	@ApiModelProperty(value = "MenuID List")
 	private List<Long> menuIdList;
 
-	@ApiModelProperty(value = "部门ID列表")
+	@ApiModelProperty(value = "GroupID List")
 	private List<Long> deptIdList;
 
 }

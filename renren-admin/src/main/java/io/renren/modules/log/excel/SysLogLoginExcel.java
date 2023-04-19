@@ -21,17 +21,17 @@ import java.util.Date;
  */
 @Data
 public class SysLogLoginExcel {
-    @Excel(name = "用户操作")
+    @Excel(name = "Operation")
     private String operation;
-    @Excel(name = "状态", replace = {"失败_0", "成功_1", "账号已锁定_1"})
+    @Excel(name = "Status", replace = {"Failed_0", "Success_1", "Account Lock_1"})
     private Integer status;
     @Excel(name = "User-Agent")
     private String userAgent;
-    @Excel(name = "操作IP")
+    @Excel(name = "IP")
     private String ip;
-    @Excel(name = "用户名")
+    @Excel(name = "Username")
     private String creatorName;
-    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "Create Date", format = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
 }

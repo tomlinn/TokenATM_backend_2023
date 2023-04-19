@@ -21,23 +21,23 @@ import java.util.Date;
  */
 @Data
 public class SysUserExcel {
-    @Excel(name = "用户名")
+    @Excel(name = "Username")
     private String username;
-    @Excel(name = "姓名")
+    @Excel(name = "Name")
     private String realName;
-    @Excel(name = "性别", replace = {"男_0", "女_1", "保密_2"})
+    @Excel(name = "Gender", replace = {"Male_0", "Female_1", "X_2"})
     private Integer gender;
-    @Excel(name = "邮箱")
+    @Excel(name = "Email")
     private String email;
-    @Excel(name = "手机号")
+    @Excel(name = "Mobile")
     private String mobile;
-    @Excel(name = "部门名称")
+    @Excel(name = "Group Name")
     private String deptName;
-    @Excel(name = "状态", replace = {"停用_0", "正常_1"})
+    @Excel(name = "Status", replace = {"Disable_0", "Enable_1"})
     private Integer status;
-    @Excel(name = "备注")
+    @Excel(name = "Remark")
     private String remark;
-    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "Create Date", format = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
 }

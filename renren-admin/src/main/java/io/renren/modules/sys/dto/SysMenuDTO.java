@@ -30,7 +30,7 @@ import java.util.Date;
  * @author Mark sunlightcs@gmail.com
  * @since 1.0.0
  */
-@ApiModel(value = "菜单管理")
+@ApiModel(value = "menu_mgt")
 public class SysMenuDTO extends TreeNode<SysMenuDTO> implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -39,36 +39,36 @@ public class SysMenuDTO extends TreeNode<SysMenuDTO> implements Serializable {
 	@NotNull(message="{id.require}", groups = UpdateGroup.class)
 	private Long id;
 
-	@ApiModelProperty(value = "上级ID")
+	@ApiModelProperty(value = "Parent ID")
 	@NotNull(message="{sysmenu.pid.require}", groups = DefaultGroup.class)
 	private Long pid;
 
-	@ApiModelProperty(value = "菜单名称")
+	@ApiModelProperty(value = "Menu Name")
 	@NotBlank(message="{sysmenu.name.require}", groups = DefaultGroup.class)
 	private String name;
 
-	@ApiModelProperty(value = "菜单URL")
+	@ApiModelProperty(value = "Menu URL")
 	private String url;
 
-	@ApiModelProperty(value = "类型  0：菜单   1：按钮")
+	@ApiModelProperty(value = "Type  0：Menu   1：Button")
 	@Range(min=0, max=1, message = "{sysmenu.type.range}", groups = DefaultGroup.class)
 	private Integer menuType;
 
-	@ApiModelProperty(value = "菜单图标")
+	@ApiModelProperty(value = "Menu Icon")
 	private String icon;
 
-	@ApiModelProperty(value = "授权(多个用逗号分隔，如：sys:user:list,sys:user:save)")
+	@ApiModelProperty(value = "Permissions(Use comma to separate, Ex.：sys:user:list,sys:user:save)")
 	private String permissions;
 
-	@ApiModelProperty(value = "排序")
+	@ApiModelProperty(value = "Sort")
 	@Min(value = 0, message = "{sort.number}", groups = DefaultGroup.class)
 	private Integer sort;
 
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "Create Date")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Date createDate;
 
-	@ApiModelProperty(value = "上级菜单名称")
+	@ApiModelProperty(value = "Parent Menu Name")
 	private String parentName;
 
 	@Override

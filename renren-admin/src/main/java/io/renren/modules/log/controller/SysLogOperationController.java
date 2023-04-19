@@ -41,19 +41,19 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("sys/log/operation")
-@Api(tags="操作日志")
+@Api(tags="Operation Log")
 public class SysLogOperationController {
     @Autowired
     private SysLogOperationService sysLogOperationService;
 
     @GetMapping("page")
-    @ApiOperation("分页")
+    @ApiOperation("Page")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
-        @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
-        @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
-        @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String") ,
-        @ApiImplicitParam(name = "status", value = "状态  0：失败    1：成功", paramType = "query", dataType="int")
+        @ApiImplicitParam(name = Constant.PAGE, value = "Current page, starting from 1", paramType = "query", required = true, dataType="int") ,
+        @ApiImplicitParam(name = Constant.LIMIT, value = "Records per page", paramType = "query",required = true, dataType="int") ,
+        @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "Order Field", paramType = "query", dataType="String") ,
+        @ApiImplicitParam(name = Constant.ORDER, value = "SortBy(asc、desc)", paramType = "query", dataType="String") ,
+        @ApiImplicitParam(name = "status", value = "Status  0：Failed    1：Success", paramType = "query", dataType="int")
     })
     @RequiresPermissions("sys:log:operation")
     public Result<PageData<SysLogOperationDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params){
@@ -63,8 +63,8 @@ public class SysLogOperationController {
     }
 
     @GetMapping("export")
-    @ApiOperation("导出")
-    @LogOperation("导出")
+    @ApiOperation("Export")
+    @LogOperation("Export")
     @RequiresPermissions("sys:log:operation")
     public void export(@ApiIgnore @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
         List<SysLogOperationDTO> list = sysLogOperationService.list(params);

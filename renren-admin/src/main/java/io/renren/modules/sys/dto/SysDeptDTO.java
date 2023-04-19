@@ -29,7 +29,7 @@ import java.util.Date;
  * @author Mark sunlightcs@gmail.com
  * @since 1.0.0
  */
-@ApiModel(value = "部门管理")
+@ApiModel(value = "group_mgt")
 public class SysDeptDTO extends TreeNode implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -38,23 +38,23 @@ public class SysDeptDTO extends TreeNode implements Serializable {
 	@NotNull(message="{id.require}", groups = UpdateGroup.class)
 	private Long id;
 
-	@ApiModelProperty(value = "上级ID")
+	@ApiModelProperty(value = "Parent ID")
 	@NotNull(message="{sysdept.pid.require}", groups = DefaultGroup.class)
 	private Long pid;
 
-	@ApiModelProperty(value = "部门名称")
+	@ApiModelProperty(value = "Group Name")
 	@NotBlank(message="{sysdept.name.require}", groups = DefaultGroup.class)
 	private String name;
 
-	@ApiModelProperty(value = "排序")
+	@ApiModelProperty(value = "Sort")
 	@Min(value = 0, message = "{sort.number}", groups = DefaultGroup.class)
 	private Integer sort;
 
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "Create Date")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Date createDate;
 
-	@ApiModelProperty(value = "上级部门名称")
+	@ApiModelProperty(value = "Parent Group Name")
 	private String parentName;
 
 	@Override

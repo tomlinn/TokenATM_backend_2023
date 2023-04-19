@@ -22,41 +22,41 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "操作日志")
+@ApiModel(value = "Operation Log")
 public class SysLogOperationDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "id")
 	private Long id;
 
-	@ApiModelProperty(value = "用户操作")
+	@ApiModelProperty(value = "Operation")
 	private String operation;
 
-	@ApiModelProperty(value = "请求URI")
+	@ApiModelProperty(value = "Request URI")
 	private String requestUri;
 
-	@ApiModelProperty(value = "请求方式")
+	@ApiModelProperty(value = "Request Method")
 	private String requestMethod;
 
-	@ApiModelProperty(value = "请求参数")
+	@ApiModelProperty(value = "Request Params")
 	private String requestParams;
 
-	@ApiModelProperty(value = "请求时长(毫秒)")
+	@ApiModelProperty(value = "Request duration (milliseconds)")
 	private Integer requestTime;
 
-	@ApiModelProperty(value = "用户代理")
+	@ApiModelProperty(value = "User Agent")
 	private String userAgent;
 
-	@ApiModelProperty(value = "操作IP")
+	@ApiModelProperty(value = "IP")
 	private String ip;
 
-	@ApiModelProperty(value = "状态  0：失败   1：成功")
+	@ApiModelProperty(value = "Status  0：Failed   1：Success")
 	private Integer status;
 
-	@ApiModelProperty(value = "用户名")
+	@ApiModelProperty(value = "Username")
 	private String creatorName;
 
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "Create Date")
 	private Date createDate;
 
 }

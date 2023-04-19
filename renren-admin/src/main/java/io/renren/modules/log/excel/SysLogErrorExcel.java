@@ -21,17 +21,17 @@ import java.util.Date;
  */
 @Data
 public class SysLogErrorExcel {
-    @Excel(name = "请求URI")
+    @Excel(name = "Request URI")
     private String requestUri;
-    @Excel(name = "请求方式")
+    @Excel(name = "Request Method")
     private String requestMethod;
-    @Excel(name = "请求参数")
+    @Excel(name = "Request Params")
     private String requestParams;
     @Excel(name = "User-Agent")
     private String userAgent;
-    @Excel(name = "操作IP")
+    @Excel(name = "IP")
     private String ip;
-    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "Create Date", format = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
 }

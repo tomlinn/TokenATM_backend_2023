@@ -22,25 +22,25 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "异常日志")
+@ApiModel(value = "Error Log")
 public class SysLogErrorDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "id")
 	private Long id;
-	@ApiModelProperty(value = "请求URI")
+	@ApiModelProperty(value = "Request URI")
 	private String requestUri;
-	@ApiModelProperty(value = "请求方式")
+	@ApiModelProperty(value = "Request Method")
 	private String requestMethod;
-	@ApiModelProperty(value = "请求参数")
+	@ApiModelProperty(value = "Request Params")
 	private String requestParams;
-	@ApiModelProperty(value = "用户代理")
+	@ApiModelProperty(value = "User Agent")
 	private String userAgent;
-	@ApiModelProperty(value = "操作IP")
+	@ApiModelProperty(value = "IP")
 	private String ip;
-	@ApiModelProperty(value = "异常信息")
+	@ApiModelProperty(value = "Error Info")
 	private String errorInfo;
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "Create Date")
 	private Date createDate;
 
 }

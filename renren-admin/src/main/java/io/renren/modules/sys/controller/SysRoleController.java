@@ -51,13 +51,13 @@ public class SysRoleController {
 	private SysRoleDataScopeService sysRoleDataScopeService;
 
 	@GetMapping("page")
-	@ApiOperation("分页")
+	@ApiOperation("Page")
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
-		@ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
-		@ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
-		@ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String") ,
-		@ApiImplicitParam(name = "name", value = "角色名", paramType = "query", dataType="String")
+		@ApiImplicitParam(name = Constant.PAGE, value = "Current page, starting from 1", paramType = "query", required = true, dataType="int") ,
+		@ApiImplicitParam(name = Constant.LIMIT, value = "Records per page", paramType = "query",required = true, dataType="int") ,
+		@ApiImplicitParam(name = Constant.ORDER_FIELD, value = "Order Field", paramType = "query", dataType="String") ,
+		@ApiImplicitParam(name = Constant.ORDER, value = "SortBy(asc、desc)", paramType = "query", dataType="String") ,
+		@ApiImplicitParam(name = "name", value = "Role Name", paramType = "query", dataType="String")
 	})
 	@RequiresPermissions("sys:role:page")
 	public Result<PageData<SysRoleDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params){
@@ -67,7 +67,7 @@ public class SysRoleController {
 	}
 
 	@GetMapping("list")
-	@ApiOperation("列表")
+	@ApiOperation("list")
 	@RequiresPermissions("sys:role:list")
 	public Result<List<SysRoleDTO>> list(){
 		List<SysRoleDTO> data = sysRoleService.list(new HashMap<>(1));
@@ -76,7 +76,7 @@ public class SysRoleController {
 	}
 
 	@GetMapping("{id}")
-	@ApiOperation("信息")
+	@ApiOperation("info")
 	@RequiresPermissions("sys:role:info")
 	public Result<SysRoleDTO> get(@PathVariable("id") Long id){
 		SysRoleDTO data = sysRoleService.get(id);
@@ -93,8 +93,8 @@ public class SysRoleController {
 	}
 
 	@PostMapping
-	@ApiOperation("保存")
-	@LogOperation("保存")
+	@ApiOperation("save")
+	@LogOperation("save")
 	@RequiresPermissions("sys:role:save")
 	public Result save(@RequestBody SysRoleDTO dto){
 		//效验数据
@@ -106,8 +106,8 @@ public class SysRoleController {
 	}
 
 	@PutMapping
-	@ApiOperation("修改")
-	@LogOperation("修改")
+	@ApiOperation("update")
+	@LogOperation("update")
 	@RequiresPermissions("sys:role:update")
 	public Result update(@RequestBody SysRoleDTO dto){
 		//效验数据
@@ -119,8 +119,8 @@ public class SysRoleController {
 	}
 
 	@DeleteMapping
-	@ApiOperation("删除")
-	@LogOperation("删除")
+	@ApiOperation("delete")
+	@LogOperation("delete")
 	@RequiresPermissions("sys:role:delete")
 	public Result delete(@RequestBody Long[] ids){
 		//效验数据

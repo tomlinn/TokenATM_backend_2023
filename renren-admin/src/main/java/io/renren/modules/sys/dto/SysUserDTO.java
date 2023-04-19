@@ -32,7 +32,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "用户管理")
+@ApiModel(value = "User_mgt")
 public class SysUserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -41,53 +41,53 @@ public class SysUserDTO implements Serializable {
 	@NotNull(message="{id.require}", groups = UpdateGroup.class)
 	private Long id;
 
-	@ApiModelProperty(value = "用户名", required = true)
+	@ApiModelProperty(value = "Username", required = true)
 	@NotBlank(message="{sysuser.username.require}", groups = DefaultGroup.class)
 	private String username;
 
-	@ApiModelProperty(value = "密码")
+	@ApiModelProperty(value = "Password")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@NotBlank(message="{sysuser.password.require}", groups = AddGroup.class)
 	private String password;
 
-	@ApiModelProperty(value = "姓名", required = true)
+	@ApiModelProperty(value = "Name", required = true)
 	@NotBlank(message="{sysuser.realname.require}", groups = DefaultGroup.class)
 	private String realName;
 
-	@ApiModelProperty(value = "头像")
+	@ApiModelProperty(value = "Head")
 	private String headUrl;
 
-	@ApiModelProperty(value = "性别   0：男   1：女    2：保密", required = true)
+	@ApiModelProperty(value = "Gender   0：Male   1：Female    2：X", required = true)
 	@Range(min=0, max=2, message = "{sysuser.gender.range}", groups = DefaultGroup.class)
 	private Integer gender;
 
-	@ApiModelProperty(value = "邮箱")
+	@ApiModelProperty(value = "Email")
 	@Email(message="{sysuser.email.error}", groups = DefaultGroup.class)
 	private String email;
 
-	@ApiModelProperty(value = "手机号")
+	@ApiModelProperty(value = "Mobile")
 	private String mobile;
 
-	@ApiModelProperty(value = "部门ID", required = true)
+	@ApiModelProperty(value = "GroupID", required = true)
 	@NotNull(message="{sysuser.deptId.require}", groups = DefaultGroup.class)
 	private Long deptId;
 
-	@ApiModelProperty(value = "状态  0：停用    1：正常", required = true)
+	@ApiModelProperty(value = "Status  0：Disabled    1：Enabled", required = true)
 	@Range(min=0, max=1, message = "{sysuser.status.range}", groups = DefaultGroup.class)
 	private Integer status;
 
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "Create Date")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Date createDate;
 
-	@ApiModelProperty(value = "超级管理员   0：否   1：是")
+	@ApiModelProperty(value = "SuperAdmin   0：No   1：Yes")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Integer superAdmin;
 
-	@ApiModelProperty(value = "角色ID列表")
+	@ApiModelProperty(value = "RoleID List")
 	private List<Long> roleIdList;
 
-	@ApiModelProperty(value = "部门名称")
+	@ApiModelProperty(value = "Group Name")
 	private String deptName;
 
 }

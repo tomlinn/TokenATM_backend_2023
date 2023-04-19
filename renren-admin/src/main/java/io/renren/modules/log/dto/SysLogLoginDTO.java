@@ -22,29 +22,29 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "登录日志")
+@ApiModel(value = "Login Log")
 public class SysLogLoginDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "id")
 	private Long id;
 
-	@ApiModelProperty(value = "用户操作  0：用户登录   1：用户退出")
+	@ApiModelProperty(value = "UserOperation  0：UserLogin   1：UserLogout")
 	private Integer operation;
 
-	@ApiModelProperty(value = "状态  0：失败    1：成功    2：账号已锁定")
+	@ApiModelProperty(value = "Status  0：Failed    1：Success    2：Account Lock")
 	private Integer status;
 
-	@ApiModelProperty(value = "用户代理")
+	@ApiModelProperty(value = "User Agent")
 	private String userAgent;
 
-	@ApiModelProperty(value = "操作IP")
+	@ApiModelProperty(value = "IP")
 	private String ip;
 
-	@ApiModelProperty(value = "用户名")
+	@ApiModelProperty(value = "Username")
 	private String creatorName;
 
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "Create Date")
 	private Date createDate;
 
 }
