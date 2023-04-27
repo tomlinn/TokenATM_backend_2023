@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.opencsv.CSVWriter;
+import io.renren.modules.security.user.SecurityUser;
 import io.renren.modules.tokenatm.entity.RequestEntity;
 import io.renren.modules.tokenatm.entity.SpendLogEntity;
 import io.renren.modules.tokenatm.entity.TokenCountEntity;
@@ -718,8 +719,8 @@ public class EarnServiceI implements EarnService {
             Date approvedDate = entity2.getTimestamp();
             Date expiredDate = new Date(approvedDate.getTime() + 24 * 3600 * 1000);
 
-            //
-            if (current_time.after(expiredDate)) {
+            // student have revoke windows
+            if (SecurityUser.getUser().getSuperAdmin() == 0 && current_time.after(expiredDate)) {
                 logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id));
                 return new CancelTokenResponse("failed", "You can only cancel it within 24 hours", 0);
             }
