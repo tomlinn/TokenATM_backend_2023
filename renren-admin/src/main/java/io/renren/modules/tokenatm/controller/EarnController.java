@@ -103,12 +103,12 @@ public class EarnController {
      */
     @PostMapping(path="/request")
     public @ResponseBody UseTokenResponse useToken(@RequestBody UseTokenBody body) throws IOException, BadRequestException, JSONException {
-        return earnService.request_token_use(body.getStudentId(), body.getAssignmentId(), body.getTokenCount());
+        return earnService.request_token_use(body.getStudentId(), body.getAssignmentId(), body.getAssignmentName(), body.getTokenCount());
     }
 
     @PostMapping(path="/cancel")
     public @ResponseBody CancelTokenResponse cancelToken(@RequestBody UseTokenBody body) throws IOException, BadRequestException, JSONException {
-        return earnService.cancel_token_use(body.getStudentId(), body.getAssignmentId(), body.getTokenCount());
+        return earnService.cancel_token_use(body.getStudentId(), body.getAssignmentId(), body.getAssignmentName(), body.getTokenCount());
     }
 
     @PostMapping("/update")

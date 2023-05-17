@@ -183,10 +183,10 @@ public class EarnServiceI implements EarnService {
         tokenRepository.save(entity);
 
         //Generate token use log
-        logRepository.save(createLog(user_id, student.getName(), add_count >= 0 ? "earn" : "spend", add_count, source,""));
+        logRepository.save(createLog(user_id, student.getName(), add_count >= 0 ? "earn" : "spend", add_count, source,"", source));
     }
 
-    private SpendLogEntity createLog(String user_id, String user_name, String type, Integer token_count, String source, String note) {
+    private SpendLogEntity createLog(String user_id, String user_name, String type, Integer token_count, String source, String note, String source_name) {
         SpendLogEntity n = new SpendLogEntity();
         n.setUser_id(user_id);
         n.setUser_name(user_name);
@@ -195,11 +195,12 @@ public class EarnServiceI implements EarnService {
         n.setSourcee(source);
         n.setTimestamp(new Date());
         n.setNote(note);
+        n.setSourceName(source_name);
         return n;
     }
 
     public Iterable<TokenCountEntity> manualSyncTokens() throws JSONException, IOException {
-        logRepository.save(createLog("", "", "system", 0, "manualSyncTokens(start)",""));
+        logRepository.save(createLog("", "", "system", 0, "manualSyncTokens(start)","", ""));
         Iterable<SpendLogEntity> originalLogs = logRepository.findAll();
         List<String> tokenSurveyIds = configRepository.findByType("qualtricsSurveyId");
         init();
@@ -208,7 +209,7 @@ public class EarnServiceI implements EarnService {
             syncSurvey(surveyId);
         }
         syncLog(originalLogs);
-        logRepository.save(createLog("", "", "system", 0, "manualSyncTokens(end)",""));
+        logRepository.save(createLog("", "", "system", 0, "manualSyncTokens(end)","", ""));
         return tokenRepository.findAll();
     }
 
@@ -480,7 +481,7 @@ public class EarnServiceI implements EarnService {
     }
 
     @Override
-    public UseTokenResponse request_token_use(String user_id, String assignment, Integer cost) throws IOException, BadRequestException, JSONException {
+    public UseTokenResponse request_token_use(String user_id, String assignment_id, String assignment_name,  Integer cost) throws IOException, BadRequestException, JSONException {
         Optional<TokenCountEntity> optional = tokenRepository.findById(user_id);
         if (!optional.isPresent()) {
             LOGGER.error("Error: Student " + user_id + " is not in current database");
@@ -495,18 +496,18 @@ public class EarnServiceI implements EarnService {
         }
 
         Map<String, Student> studentMap = getStudents();
-
         // Create a new request in the database with a 'pending' status
         RequestEntity request = new RequestEntity();
         request.setStudentId(user_id);
-        request.setAssignmentId(assignment);
+        request.setAssignmentId(assignment_id);
         request.setTokenCount(cost);
+        request.setAssignmentName(assignment_name);
         request.setStudentName(studentMap.get(user_id).getName());
         request.setStatus("Pending");
         requestRepository.save(request);
 
         // create a log
-        logRepository.save(createLog(user_id, studentMap.get(user_id).getName(), "spend(pending)", cost, assignment, null));
+        logRepository.save(createLog(user_id, studentMap.get(user_id).getName(), "spend(pending)", -cost, assignment_id, null, assignment_name));
 
         // Update the token count in the database
         token_amount -= cost;
@@ -542,7 +543,7 @@ public class EarnServiceI implements EarnService {
                 String resubmissionId = new Gson().fromJson(str_response, JsonObject.class).get("id").getAsString();
 
                 Map<String, Student> studentMap = getStudents();
-                logRepository.save(createLog(request.getStudentId(), studentMap.get(request.getStudentId()).getName(), "spend(approved)", request.getTokenCount(), request.getAssignmentId(), resubmissionId));
+                logRepository.save(createLog(request.getStudentId(), studentMap.get(request.getStudentId()).getName(), "spend(approved)", -request.getTokenCount(), request.getAssignmentId(), resubmissionId,request.getAssignmentName()));
                 // sendNotificationEmail(studentMap.get(user_id), resubmission, cost);
                 return new UseTokenResponse("success", "", request.getTokenCount());
             } else {
@@ -570,6 +571,7 @@ public class EarnServiceI implements EarnService {
         String title = "Resubmission";
         Date due =  new Date(current_time.getTime() + 24*60*60*1000);
         Map<String, Student> studentMap = getStudents();
+        Map<String, String> assignmentIdNameMap = new HashMap<>();
         Map<String, List<String>> requestsByAssignment = new HashMap<>();
         List<String> approvedRequests = new ArrayList<>();
         for (RequestEntity request : requests) {
@@ -579,6 +581,7 @@ public class EarnServiceI implements EarnService {
                 List<String> studentIds = new ArrayList<>();
                 studentIds.add(request.getStudentId());
                 requestsByAssignment.put(request.getAssignmentId(), studentIds);
+                assignmentIdNameMap.put(request.getAssignmentId(), request.getAssignmentName());
             }
         }
 
@@ -606,7 +609,7 @@ public class EarnServiceI implements EarnService {
                 String str_response = response.body().string();
                 String resubmissionId = new Gson().fromJson(str_response, JsonObject.class).get("id").getAsString();
                 for (String studentId : studentIds) {
-                    logRepository.save(createLog(studentId, studentMap.get(studentId).getName(), "spend(approved)", studentMap.get(studentId).getTokenCount(), assignmentId, resubmissionId));
+                    logRepository.save(createLog(studentId, studentMap.get(studentId).getName(), "spend(approved)", studentMap.get(studentId).getTokenCount(), assignmentId, resubmissionId, assignmentIdNameMap.get(assignmentId)));
                 }
                 approvedRequests.add(assignmentId);
             } else {
@@ -673,13 +676,13 @@ public class EarnServiceI implements EarnService {
 
         // create a log
         Map<String, Student> studentMap = getStudents();
-        logRepository.save(createLog(dbRequest.getStudentId(), studentMap.get(dbRequest.getStudentId()).getName(), "spend(rejected)", dbRequest.getTokenCount(), dbRequest.getAssignmentId(), null));
+        logRepository.save(createLog(dbRequest.getStudentId(), studentMap.get(dbRequest.getStudentId()).getName(), "spend(rejected)", dbRequest.getTokenCount(), dbRequest.getAssignmentId(), null, dbRequest.getAssignmentName()));
 
         return new RejectTokenResponse("success", "Request rejected and token count updated", token_amount);
     }
 
     @Override
-    public CancelTokenResponse cancel_token_use(String user_id, String assignment, Integer cost) throws IOException, BadRequestException, JSONException {
+    public CancelTokenResponse cancel_token_use(String user_id, String assignment, String assignment_name, Integer cost) throws IOException, BadRequestException, JSONException {
         // Check if user exists
         Map<String, Student> studentMap = getStudents();
         // TODO error handling - user_id
@@ -687,14 +690,14 @@ public class EarnServiceI implements EarnService {
         Optional<TokenCountEntity> optionalTokenCount = tokenRepository.findById(user_id);
         if (!optionalTokenCount.isPresent()) {
             LOGGER.error("Error: Student " + user_id + " is not in current database");
-            logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",""));
+            logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")","", assignment_name));
             return new CancelTokenResponse("failed", "Student " + user_id + " is not in current database", 0);
         }
         // Find the request for the given student ID and assignment
         List<RequestEntity> optionalRequest = requestRepository.findByStudentIdAndAssignmentIdOrderByIdDesc(user_id, assignment);
         if (optionalRequest.isEmpty()) {
             LOGGER.error("Error: Request not found for student " + user_id + " and assignment " + assignment);
-            logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",""));
+            logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")","", assignment_name));
             return new CancelTokenResponse("failed", "Request not found for student " + user_id + " and assignment " + assignment, 0);
         }
         RequestEntity request = optionalRequest.get(0);
@@ -702,11 +705,11 @@ public class EarnServiceI implements EarnService {
         // Check if the request is already cancelled or rejected
         if (request.getStatus().equals("Cancelled")) {
             LOGGER.error("Error: Request has already been cancelled");
-            logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",""));
+            logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")","", assignment_name));
             return new CancelTokenResponse("failed", "Request has already been cancelled", 0);
         } else if (request.getStatus().equals("Rejected")) {
             LOGGER.error("Error: Request has already been rejected");
-            logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",""));
+            logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")","", assignment_name));
             return new CancelTokenResponse("failed", "Request has already been rejected", 0);
         }
         Date current_time = new Date();
@@ -721,7 +724,7 @@ public class EarnServiceI implements EarnService {
 
             // student have revoke windows
             if (SecurityUser.getUser().getSuperAdmin() == 0 && current_time.after(expiredDate)) {
-                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id));
+                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
                 return new CancelTokenResponse("failed", "You can only cancel it within 24 hours", 0);
             }
 
@@ -734,7 +737,7 @@ public class EarnServiceI implements EarnService {
             Response response = apiProcess("GET", url, builder.build(), "");
             String str_response = response.body().string();
             if (response.code() != 200) {
-                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id));
+                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
                 return new CancelTokenResponse("failed", new ObjectMapper().readTree(str_response).path("errors").get(0).path("message").asText(), 0);
             }
 
@@ -758,18 +761,18 @@ public class EarnServiceI implements EarnService {
             switch (responseStatus) {
                 case 200:
                     // Update the request status to 'Cancelled'
-                    logRepository.save(createLog("", "", "system", 0, "Revoked request - " + studentName + "(" + user_id + ")",resubmission_id));
+                    logRepository.save(createLog("", "", "system", 0, "Revoked request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
                     request.setStatus("Revoked");
                     break;
                 case 400:
-                    logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id));
+                    logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
                     return new CancelTokenResponse("failed", "Student already requested resubmission", 0);
                 default:
-                    logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id));
+                    logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
                     return new CancelTokenResponse("failed", "Unable to update tokens", 0);
             }
         } else {
-            logRepository.save(createLog("", "", "system", 0, "Cancelled request - " + studentName + "(" + user_id + ")",""));
+            logRepository.save(createLog("", "", "system", 0, "Cancelled request - " + studentName + "(" + user_id + ")","", assignment_name));
             // Update the request status to 'Cancelled'
             request.setStatus("Cancelled");
         }
@@ -784,7 +787,7 @@ public class EarnServiceI implements EarnService {
         tokenRepository.save(tokenCount);
 
         // create a log
-        logRepository.save(createLog(user_id, studentMap.get(user_id).getName(), "spend(cancel)", request.getTokenCount(), assignment, null));
+        logRepository.save(createLog(user_id, studentMap.get(user_id).getName(), "spend(cancel)", request.getTokenCount(), assignment, null, assignment_name));
         return new CancelTokenResponse("success", "Request cancelled and token count updated", token_amount);
     }
 
@@ -1036,7 +1039,8 @@ public class EarnServiceI implements EarnService {
             //Save manual update log
             Map<String, Student> students = getStudents();
             Student student = students.get(user_id);
-            logRepository.save(createLog(user_id, student.getName(), "system", tokenNum, "Manual Update Token Amount from "+ oriTokenNum +" to " + tokenNum,""));
+            String source = "Manual Update Token Amount from "+ oriTokenNum +" to " + tokenNum;
+            logRepository.save(createLog(user_id, student.getName(), "system", tokenNum, source,"", source));
             return new UpdateTokenResponse("complete", tokenNum);
         } else {
             LOGGER.error("Error: Student " + user_id + " does not exist in database");

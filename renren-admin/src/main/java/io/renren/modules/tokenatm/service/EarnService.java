@@ -30,12 +30,12 @@ public interface EarnService {
 
     Iterable<TokenCountEntity> manualSyncTokens() throws JSONException, IOException;
 
-    UseTokenResponse request_token_use(String user_id, String assignment_id, Integer cost) throws IOException, BadRequestException, JSONException;
+    UseTokenResponse request_token_use(String user_id, String assignment_id, String assignment_name, Integer cost) throws IOException, BadRequestException, JSONException;
 
     UseTokenResponse approve_token_use(RequestEntity request) throws IOException, BadRequestException, JSONException;
     UseTokenResponse approve_all_token_use(List<RequestEntity> request) throws IOException, BadRequestException, JSONException;
 
-    CancelTokenResponse cancel_token_use(String user_id, String assignment_id, Integer cost) throws IOException, BadRequestException, JSONException;
+    CancelTokenResponse cancel_token_use(String user_id, String assignment_id, String assignment_name, Integer cost) throws IOException, BadRequestException, JSONException;
 
     List<AssignmentStatus> getAssignmentStatuses(String user_id) throws JSONException, IOException;
 

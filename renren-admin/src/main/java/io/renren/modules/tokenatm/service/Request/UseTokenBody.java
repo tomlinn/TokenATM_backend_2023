@@ -3,6 +3,7 @@ package io.renren.modules.tokenatm.service.Request;
 public class UseTokenBody {
 
     private String assignmentId;
+    private String assignmentName;
     private Integer tokenCount;
     private String studentId;
 
@@ -16,6 +17,14 @@ public class UseTokenBody {
     public void setAssignmentId (String assignmentId) {
         this.assignmentId = assignmentId;
     }
+
+    public String getAssignmentName() {
+        return assignmentName;
+    }
+    public void setAssignmentName (String assignmentName) {
+        this.assignmentName = assignmentName;
+    }
+
 
     public String getStudentId() {
         return studentId;

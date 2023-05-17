@@ -29,6 +29,8 @@ public class SpendLogEntity {
 
 	private String source;
 
+	private String source_name;
+
 	private Date timestamp;
 
 	public String getUserId() {
@@ -68,6 +70,14 @@ public class SpendLogEntity {
 
 	public void setSourcee(String source) {
 		this.source = source;
+	}
+
+	public String getSourceName() {
+		return this.source_name;
+	}
+
+	public void setSourceName(String source_name) {
+		this.source_name = source_name;
 	}
 	public void setTimestamp(Date current_time) {
 		this.timestamp = current_time;

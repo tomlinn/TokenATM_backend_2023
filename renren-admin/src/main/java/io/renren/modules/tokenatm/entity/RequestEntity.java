@@ -8,6 +8,7 @@ public class RequestEntity {
 	private String studentId;
 	private String studentName;
 	private String assignmentId;
+	private String assignmentName;
 	private int tokenCount;
 	private boolean isApproved;
 
@@ -17,9 +18,10 @@ public class RequestEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 
-	public RequestEntity(String studentId, String assignmentId, int tokenCount, String status) {
+	public RequestEntity(String studentId, String assignmentId, String assignmentName, int tokenCount, String status) {
 		this.studentId = studentId;
 		this.assignmentId = assignmentId;
+		this.assignmentName = assignmentName;
 		this.tokenCount = tokenCount;
 		this.isApproved = false;
 		this.status = status;
@@ -51,6 +53,14 @@ public class RequestEntity {
 
 	public void setAssignmentId(String assignmentId) {
 		this.assignmentId = assignmentId;
+	}
+
+	public String getAssignmentName() {
+		return this.assignmentName;
+	}
+
+	public void setAssignmentName(String assignmentName) {
+		this.assignmentName = assignmentName;
 	}
 
 	public int getTokenCount() {
