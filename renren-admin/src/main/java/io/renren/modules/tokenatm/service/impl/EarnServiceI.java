@@ -586,13 +586,13 @@ public class EarnServiceI implements EarnService {
         }
 
         for (Map.Entry<String, List<String>> entry : requestsByAssignment.entrySet()) {
-            String assignmentId = entry.getKey();
+            String assignment_id = entry.getKey();
             List<String> studentIds = entry.getValue();
 
             Map<String, String> resubmissionsMap = getResubmissionsMap();
-            String assignment_id = resubmissionsMap.get(assignmentId);
+            String resubmission_id = resubmissionsMap.get(assignment_id);
             URL url = UriComponentsBuilder
-                    .fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + assignment_id + "/overrides")
+                    .fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + resubmission_id + "/overrides")
                     .build().toUri().toURL();
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("assignment_override[title]", title)
@@ -607,11 +607,11 @@ public class EarnServiceI implements EarnService {
             Response response = apiProcess("POST", url, body, "");
             if (response.code() == 201) {
                 String str_response = response.body().string();
-                String resubmissionId = new Gson().fromJson(str_response, JsonObject.class).get("id").getAsString();
+                String resubmission_key_id = new Gson().fromJson(str_response, JsonObject.class).get("id").getAsString();
                 for (String studentId : studentIds) {
-                    logRepository.save(createLog(studentId, studentMap.get(studentId).getName(), "spend(approved)", studentMap.get(studentId).getTokenCount(), assignmentId, resubmissionId, assignmentIdNameMap.get(assignmentId)));
+                    logRepository.save(createLog(studentId, studentMap.get(studentId).getName(), "spend(approved)", studentMap.get(studentId).getTokenCount(), assignment_id, resubmission_key_id, assignmentIdNameMap.get(assignment_id)));
                 }
-                approvedRequests.add(assignmentId);
+                approvedRequests.add(assignment_id);
             } else {
                 ObjectMapper mapper = new ObjectMapper();
                 String str_response = response.body().string();
@@ -682,7 +682,7 @@ public class EarnServiceI implements EarnService {
     }
 
     @Override
-    public CancelTokenResponse cancel_token_use(String user_id, String assignment, String assignment_name, Integer cost) throws IOException, BadRequestException, JSONException {
+    public CancelTokenResponse cancel_token_use(String user_id, String assignment_id, String assignment_name, Integer cost) throws IOException, BadRequestException, JSONException {
         // Check if user exists
         Map<String, Student> studentMap = getStudents();
         // TODO error handling - user_id
@@ -694,11 +694,11 @@ public class EarnServiceI implements EarnService {
             return new CancelTokenResponse("failed", "Student " + user_id + " is not in current database", 0);
         }
         // Find the request for the given student ID and assignment
-        List<RequestEntity> optionalRequest = requestRepository.findByStudentIdAndAssignmentIdOrderByIdDesc(user_id, assignment);
+        List<RequestEntity> optionalRequest = requestRepository.findByStudentIdAndAssignmentIdOrderByIdDesc(user_id, assignment_id);
         if (optionalRequest.isEmpty()) {
-            LOGGER.error("Error: Request not found for student " + user_id + " and assignment " + assignment);
+            LOGGER.error("Error: Request not found for student " + user_id + " and assignment " + assignment_id);
             logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")","", assignment_name));
-            return new CancelTokenResponse("failed", "Request not found for student " + user_id + " and assignment " + assignment, 0);
+            return new CancelTokenResponse("failed", "Request not found for student " + user_id + " and assignment " + assignment_id, 0);
         }
         RequestEntity request = optionalRequest.get(0);
 
@@ -714,30 +714,30 @@ public class EarnServiceI implements EarnService {
         }
         Date current_time = new Date();
         if (request.getStatus().equals("Approved")) {
-            List<SpendLogEntity> optional2 = logRepository.findByUserIdAssignmentIdType(user_id, assignment, "spend(approved)");
+            List<SpendLogEntity> optional2 = logRepository.findByUserIdAssignmentIdType(user_id, assignment_id, "spend(approved)");
             SpendLogEntity entity2 = optional2.get(0);
-            String resubmission_id = entity2.getNote();
+            String resubmission_key_id = entity2.getNote();
             Map<String, String> resubmissionsMap = getResubmissionsMap();
-            String assignment_id = resubmissionsMap.get(assignment);
+            String resubmission_id = resubmissionsMap.get(assignment_id);
             Date approvedDate = entity2.getTimestamp();
             Date expiredDate = new Date(approvedDate.getTime() + 24 * 3600 * 1000);
 
             // student have revoke windows
             if (SecurityUser.getUser().getSuperAdmin() == 0 && current_time.after(expiredDate)) {
-                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
+                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_key_id, assignment_name));
                 return new CancelTokenResponse("failed", "You can only cancel it within 24 hours", 0);
             }
 
             // Get user list from a specific resubmissionId
             URL url = UriComponentsBuilder
-                    .fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + assignment_id + "/overrides/" + resubmission_id)
+                    .fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + resubmission_id + "/overrides/" + resubmission_key_id)
                     .build().toUri().toURL();
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("", "");
             Response response = apiProcess("GET", url, builder.build(), "");
             String str_response = response.body().string();
             if (response.code() != 200) {
-                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
+                logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_key_id, assignment_name));
                 return new CancelTokenResponse("failed", new ObjectMapper().readTree(str_response).path("errors").get(0).path("message").asText(), 0);
             }
 
@@ -761,14 +761,14 @@ public class EarnServiceI implements EarnService {
             switch (responseStatus) {
                 case 200:
                     // Update the request status to 'Cancelled'
-                    logRepository.save(createLog("", "", "system", 0, "Revoked request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
+                    logRepository.save(createLog("", "", "system", 0, "Revoked request - " + studentName + "(" + user_id + ")",resubmission_key_id, assignment_name));
                     request.setStatus("Revoked");
                     break;
                 case 400:
-                    logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
+                    logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_key_id, assignment_name));
                     return new CancelTokenResponse("failed", "Student already requested resubmission", 0);
                 default:
-                    logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_id, assignment_name));
+                    logRepository.save(createLog("", "", "system", 0, "Failed to cancel request - " + studentName + "(" + user_id + ")",resubmission_key_id, assignment_name));
                     return new CancelTokenResponse("failed", "Unable to update tokens", 0);
             }
         } else {
@@ -787,7 +787,7 @@ public class EarnServiceI implements EarnService {
         tokenRepository.save(tokenCount);
 
         // create a log
-        logRepository.save(createLog(user_id, studentMap.get(user_id).getName(), "spend(cancel)", request.getTokenCount(), assignment, null, assignment_name));
+        logRepository.save(createLog(user_id, studentMap.get(user_id).getName(), "spend(cancel)", request.getTokenCount(), assignment_id, null, assignment_name));
         return new CancelTokenResponse("success", "Request cancelled and token count updated", token_amount);
     }
 
@@ -846,17 +846,17 @@ public class EarnServiceI implements EarnService {
      * List assignment submissions for a specific student
      *
      * @param user_id
-     * @param assignmentId
+     * @param assignment_id
      * @return
      */
-    private AssignmentStatus getAssignmentStatusForStudent(String user_id, String assignmentId, String resubmissionId) throws IOException, JSONException {
+    private AssignmentStatus getAssignmentStatusForStudent(String user_id, String assignment_id, String resubmission_id) throws IOException, JSONException {
         int page = 1;
-        Assignment assignment = fetchAssignment(assignmentId);
-        Assignment resubmission = fetchAssignment(resubmissionId);
+        Assignment assignment = fetchAssignment(assignment_id);
+        Assignment resubmission = fetchAssignment(resubmission_id);
 
         while (true) {
             URL url = UriComponentsBuilder
-                    .fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + assignmentId + "/submissions")
+                    .fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + assignment_id + "/submissions")
                     .queryParam("page", page)
                     .queryParam("per_page", PER_PAGE)
                     .build().toUri().toURL();
@@ -886,7 +886,7 @@ public class EarnServiceI implements EarnService {
                                 -1);
                     }
                     String status = "none";
-                    List<SpendLogEntity> data = logRepository.findByUserIdAssignmentId(user_id, assignmentId);
+                    List<SpendLogEntity> data = logRepository.findByUserIdAssignmentId(user_id, assignment_id);
 
                     if (data.size() > 0) {
                         String latest_status = data.get(data.size() - 1).getType();
@@ -928,10 +928,10 @@ public class EarnServiceI implements EarnService {
         ArrayList<String> resubmissionIds = new ArrayList<>();
 
         for (Map.Entry<String, String> entry : resubmissionsMap.entrySet()) {
-            String assignmentId = entry.getKey();
-            String resubmissionId = entry.getValue();
-            resubmissionIds.add(resubmissionId);
-            queries.add("assignment_ids[]=" + assignmentId);
+            String assignment_id = entry.getKey();
+            String resubmission_id = entry.getValue();
+            resubmissionIds.add(resubmission_id);
+            queries.add("assignment_ids[]=" + assignment_id);
         }
         URL url = UriComponentsBuilder.fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/students/submissions")
                 .queryParam(String.join("&", queries))
@@ -944,25 +944,25 @@ public class EarnServiceI implements EarnService {
         for (int i = 0; i < resultArray.length(); i++) {
             JSONObject submissionObj = resultArray.getJSONObject(i);
             JSONObject assignmentObj = submissionObj.getJSONObject("assignment");
-            String assignmentId = assignmentObj.get("id").toString();
+            String assignment_id = assignmentObj.get("id").toString();
             Double score = submissionObj.isNull("score") ? null : submissionObj.getDouble("score");
             String assignmentName = assignmentObj.get("name").toString();
             String assignmentDue = assignmentObj.get("due_at").toString();
             Double assignmentMaxScore = assignmentObj.getDouble("points_possible");
-            String resubmissionId = resubmissionsMap.get(assignmentId);
-            String resubmissionDue = resubmissionData.get(resubmissionId).get("due_at");
+            String resubmission_id = resubmissionsMap.get(assignment_id);
+            String resubmissionDue = resubmissionData.get(resubmission_id).get("due_at");
 
             //Doesn't have a grade yet or can't fetch grade
             if (score == null) {
-                assignmentStatuses.add(new AssignmentStatus(assignmentName, assignmentId, resubmissionId, assignmentDue, 0.0, assignmentMaxScore, "Not graded yet", -1));
+                assignmentStatuses.add(new AssignmentStatus(assignmentName, assignment_id, resubmission_id, assignmentDue, 0.0, assignmentMaxScore, "Not graded yet", -1));
             } else {
                 //Grades released
                 int tokens_required = (int) (assignmentMaxScore - score);
                 String status = "none";
                 if (!resubmissionDue.equals("No Due Date") && Instant.now().isAfter(Instant.parse(resubmissionDue))) {
-                    assignmentStatuses.add(new AssignmentStatus(assignmentName, assignmentId, resubmissionId, resubmissionDue, score, assignmentMaxScore, "overdue", -1));
+                    assignmentStatuses.add(new AssignmentStatus(assignmentName, assignment_id, resubmission_id, resubmissionDue, score, assignmentMaxScore, "overdue", -1));
                 } else {
-                    List<SpendLogEntity> data = logRepository.findByUserIdAssignmentId(user_id, assignmentId);
+                    List<SpendLogEntity> data = logRepository.findByUserIdAssignmentId(user_id, assignment_id);
 
                     if (!data.isEmpty()) {
                         String latestStatus = data.get(data.size() - 1).getType();
@@ -972,7 +972,7 @@ public class EarnServiceI implements EarnService {
                             status = "Pending";
                         }
                     }
-                    assignmentStatuses.add(new AssignmentStatus(assignmentName, assignmentId, resubmissionId, resubmissionDue, score, assignmentMaxScore, status, tokens_required));
+                    assignmentStatuses.add(new AssignmentStatus(assignmentName, assignment_id, resubmission_id, resubmissionDue, score, assignmentMaxScore, status, tokens_required));
                 }
             }
         }
@@ -980,8 +980,8 @@ public class EarnServiceI implements EarnService {
     }
 
 
-    private Assignment fetchAssignment(String assignmentId) throws IOException, JSONException {
-        URL url = UriComponentsBuilder.fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + assignmentId)
+    private Assignment fetchAssignment(String assignment_id) throws IOException, JSONException {
+        URL url = UriComponentsBuilder.fromUriString(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments/" + assignment_id)
                 .build().toUri().toURL();
         String response = apiProcess(url, "");
         JSONObject responseObj = new JSONObject(response);
@@ -991,14 +991,14 @@ public class EarnServiceI implements EarnService {
         }
         double pointsPossible = responseObj.getDouble("points_possible");
         String name = responseObj.get("name").toString();
-        return new Assignment(assignmentId, name, dueAt, pointsPossible);
+        return new Assignment(assignment_id, name, dueAt, pointsPossible);
     }
 
     private Map<String, Map<String, String>> fetchResubmissions(Map<String, String> resubmissionsMap) throws IOException, JSONException, URISyntaxException {
         Map<String, Map<String, String>> resubmissionsIdMap = new HashMap<>();
 
-        for (String assignmentId : resubmissionsMap.values()) {
-            resubmissionsIdMap.put(assignmentId, new HashMap<>());
+        for (String assignment_id : resubmissionsMap.values()) {
+            resubmissionsIdMap.put(assignment_id, new HashMap<>());
         }
         String query = "assignment_ids[]=" + String.join("&assignment_ids[]=", resubmissionsMap.values());
         URL url = new URL(getCanvasApiEndpoint() + "/courses/" + getCourseID() + "/assignments?" + query);
@@ -1008,9 +1008,9 @@ public class EarnServiceI implements EarnService {
 
         for (int i = 0; i < resultArray.length(); i++) {
             JSONObject submissionObj = resultArray.getJSONObject(i);
-            String ResubmissionId = submissionObj.get("id").toString();
-            Map<String, String> item = resubmissionsIdMap.get(ResubmissionId);
-            item.put("id", ResubmissionId);
+            String resubmission_id = submissionObj.get("id").toString();
+            Map<String, String> item = resubmissionsIdMap.get(resubmission_id);
+            item.put("id", resubmission_id);
             item.put("due_at", submissionObj.get("lock_at").toString());
         }
 
