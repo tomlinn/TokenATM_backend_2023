@@ -68,7 +68,7 @@ public class SpendLogEntity {
 		return this.source;
 	}
 
-	public void setSourcee(String source) {
+	public void setSource(String source) {
 		this.source = source;
 	}
 

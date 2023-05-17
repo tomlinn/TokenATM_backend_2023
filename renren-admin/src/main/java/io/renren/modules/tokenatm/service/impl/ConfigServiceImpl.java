@@ -64,7 +64,7 @@ public class ConfigServiceImpl implements ConfigService {
         n.setUser_name(user_name);
         n.setType(type);
         n.setTokenCount(token_count);
-        n.setSourcee(source);
+        n.setSource(source);
         n.setTimestamp(new Date());
         n.setNote(note);
         return n;

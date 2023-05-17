@@ -25,7 +25,7 @@ public class SpendLogController {
         n.setUser_name(user_name);
         n.setType(type);
         n.setTokenCount(token_count);
-        n.setSourcee(source);
+        n.setSource(source);
         n.setTimestamp(new Date());
         logRepository.save(n);
         return "Saved";
