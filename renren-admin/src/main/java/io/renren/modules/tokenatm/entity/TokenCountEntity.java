@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "Tokens")
+@Table(name = "token_user")
 public class TokenCountEntity {
     @Id
     private String user_id;

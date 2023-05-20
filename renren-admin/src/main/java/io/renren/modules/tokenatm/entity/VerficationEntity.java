@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Random;
 
 @Entity
-@Table(name = "Verification")
+@Table(name = "token_verify")
 public class VerficationEntity {
 
     @Id

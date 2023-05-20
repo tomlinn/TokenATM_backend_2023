@@ -3,7 +3,7 @@ package io.renren.modules.tokenatm.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Requests")
+@Table(name = "token_request")
 public class RequestEntity {
 	private String studentId;
 	private String studentName;

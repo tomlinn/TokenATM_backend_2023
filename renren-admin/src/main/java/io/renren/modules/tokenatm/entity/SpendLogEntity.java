@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity // This tells Hibernate to make a table out of this class
-@Table(indexes = @Index(name="id_idx", columnList = "user_id"))
+@Table(name = "token_log")
 public class SpendLogEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

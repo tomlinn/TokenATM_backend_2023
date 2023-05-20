@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity // This tells Hibernate to make a table out of this class
-@Table(indexes = @Index(name="id_idx", columnList = "config_type"))
+@Table(name ="token_config")
 public class ConfigEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
