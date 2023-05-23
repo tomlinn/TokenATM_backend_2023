@@ -27,8 +27,11 @@ import io.renren.modules.security.user.UserDetail;
 import io.renren.modules.sys.dto.SysUserDTO;
 import io.renren.modules.sys.enums.UserStatusEnum;
 import io.renren.modules.sys.service.SysUserService;
+import io.renren.modules.tokenatm.entity.TokenCountEntity;
 import io.renren.modules.tokenatm.entity.VerficationEntity;
 import io.renren.modules.tokenatm.service.EmailService;
+import io.renren.modules.tokenatm.service.Response.UseTokenResponse;
+import io.renren.modules.tokenatm.service.TokenRepository;
 import io.renren.modules.tokenatm.service.VerificationRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -46,6 +49,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 登录
@@ -67,6 +71,8 @@ public class LoginController {
 	EmailService emailService;
 	@Autowired
 	VerificationRepository verificationRepository;
+	@Autowired
+	private TokenRepository tokenRepository;
 
 	@GetMapping("captcha")
 	@ApiOperation(value = "验证码", produces="application/octet-stream")
@@ -146,6 +152,15 @@ public class LoginController {
 
 	@PostMapping("send_password")
 	public Result sendPassword(HttpServletRequest request, @RequestBody LoginDTO login) {
+
+		// TODO: uncomment when system is online
+		// Optional<TokenCountEntity> optional = tokenRepository.findById(login.getUsername());
+		// if (!optional.isPresent()) {
+		// 	Result result = new Result();
+		// 	result.setCode(0);
+		// 	result.setMsg("Sorry, you are not authorized for TokenATM. Please contact with your professor.");
+		// 	return result;
+		// }
 
 		SysUserDTO user = sysUserService.getByUsername(login.getUsername());
 
