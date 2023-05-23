@@ -165,7 +165,7 @@ public class EarnServiceI implements EarnService {
         return entity;
     }
 
-    private void updateTokenEntity(Map<String, Student> studentMap, String user_id, int add_count, String source) {
+    private void updateTokenEntity(Map<String, Student> studentMap, String user_id, int add_count, String source, String source_name) {
         Student student = studentMap.getOrDefault(user_id, null);
         if (student == null) {
             LOGGER.error("Error: Student " + user_id + " does not exist in enrollment list");
@@ -183,7 +183,7 @@ public class EarnServiceI implements EarnService {
         tokenRepository.save(entity);
 
         //Generate token use log
-        logRepository.save(createLog(user_id, student.getName(), add_count >= 0 ? "earn" : "spend", add_count, source,"", source));
+        logRepository.save(createLog(user_id, student.getName(), add_count >= 0 ? "earn" : "spend", add_count, source,"", source_name));
     }
 
     private SpendLogEntity createLog(String user_id, String user_name, String type, Integer token_count, String source, String note, String source_name) {
@@ -236,7 +236,7 @@ public class EarnServiceI implements EarnService {
         }
 
         for (String userId : usersToUpdate) {
-            updateTokenEntity(studentMap, userId, 1, "Qualtrics Survey: " + surveyId);
+            updateTokenEntity(studentMap, userId, 1, "Qualtrics Survey: " + surveyId, "");
         }
     }
 
@@ -258,7 +258,7 @@ public class EarnServiceI implements EarnService {
                             String userId = entry.getKey();
                             Double score = entry.getValue();
                             if(score >= bar) {
-                                updateTokenEntity(studentMap, userId, credit, "group_"+group);
+                                updateTokenEntity(studentMap, userId, credit, "group_" + group, "group_" + group + ": " + score + "(score) >= " + bar + "(bar)");
                             }
                         }
                     }
@@ -276,7 +276,7 @@ public class EarnServiceI implements EarnService {
                 String user_id = String.valueOf(log.getUserId());
                 Integer token_count = log.getTokenCount();
                 if (log.getType().startsWith("spend")) {
-                    updateTokenEntity(studentMap, user_id, -token_count, log.getSource());
+                    updateTokenEntity(studentMap, user_id, -token_count, log.getSource(), "");
                 }else if (log.getType().startsWith("system")) {
                     logRepository.save(log);
                 }
