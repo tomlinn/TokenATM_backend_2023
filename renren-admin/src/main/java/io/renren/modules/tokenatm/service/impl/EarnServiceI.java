@@ -471,12 +471,21 @@ public class EarnServiceI implements EarnService {
         return result;
     }
 
-    private void sendNotificationEmail(Student student, Assignment assignment, int cost) {
-        String message = String.format("On %s %s (ID: %s) successfully requested to use %d tokens for resubmission of %s (ID: %s)",
-                new Date(), student.getName(), student.getId(), cost, assignment.getName(), assignment.getId());
-        List<String> INSTRUCTOR_EMAILS = configRepository.findByType("INSTRUCTOR_EMAILS");
-        for (String email : INSTRUCTOR_EMAILS) {
-            emailService.sendSimpleMessage(email, "Usage Update in Token ATM", message);
+    private void sendNotificationEmail(String request_type, String student_name, String student_id, String assignment_name, Date current_time,int token_amount, int cost) {
+        // send email to notify instructors
+        List<String> emails = getInstructorEmails();
+        for (String email : emails) {
+            String subject = student_name + " " + request_type + " a resubmission";
+            String content = student_name + " " + request_type + " a resubmission on \""+ assignment_name +"\"\n";
+
+            content += "\n\nStudent Name: " + student_name + "\n";
+            content += "Student ID: " + student_id + "\n";
+            content += "Assignment Name: " + assignment_name + "\n";
+            content += "Request at: " + current_time + "\n";
+            content += "Cost: " + cost + " token(s) \n";
+            content += "Token Change: " + (token_amount + cost) + "(original) - " + cost + "(cost) = " + token_amount + "(new balance)\n";
+
+            emailService.sendSimpleMessage(email, subject, content);
         }
     }
 
@@ -514,6 +523,9 @@ public class EarnServiceI implements EarnService {
         entity.setToken_count(token_amount);
         entity.setTimestamp(new Date());
         tokenRepository.save(entity);
+
+        // notify instructors when students request a resubmission
+        sendNotificationEmail("requested", student_name, user_id, assignment_name, current_time, token_amount, cost);
 
         return new UseTokenResponse("success", "Request submitted for approval", token_amount);
 
