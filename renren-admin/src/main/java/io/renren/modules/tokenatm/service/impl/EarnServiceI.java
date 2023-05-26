@@ -504,14 +504,17 @@ public class EarnServiceI implements EarnService {
             return new UseTokenResponse("failed", "Insufficient token amount", token_amount);
         }
 
+        Date current_time = new Date();
         Map<String, Student> studentMap = getStudents();
+        String student_name = studentMap.get(user_id).getName();
+
         // Create a new request in the database with a 'pending' status
         RequestEntity request = new RequestEntity();
         request.setStudentId(user_id);
         request.setAssignmentId(assignment_id);
         request.setTokenCount(cost);
         request.setAssignmentName(assignment_name);
-        request.setStudentName(studentMap.get(user_id).getName());
+        request.setStudentName(student_name);
         request.setStatus("Pending");
         requestRepository.save(request);
 
@@ -521,7 +524,7 @@ public class EarnServiceI implements EarnService {
         // Update the token count in the database
         token_amount -= cost;
         entity.setToken_count(token_amount);
-        entity.setTimestamp(new Date());
+        entity.setTimestamp(current_time);
         tokenRepository.save(entity);
 
         // notify instructors when students request a resubmission
