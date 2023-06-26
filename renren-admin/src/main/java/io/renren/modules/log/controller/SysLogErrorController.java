@@ -32,13 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * 异常日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @RestController
 @RequestMapping("sys/log/error")
 @Api(tags="Error Log")

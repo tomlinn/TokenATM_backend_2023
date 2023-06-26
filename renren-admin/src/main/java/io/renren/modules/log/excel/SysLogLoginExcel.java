@@ -13,12 +13,6 @@ import lombok.Data;
 
 import java.util.Date;
 
-/**
- * 登录日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
 public class SysLogLoginExcel {
     @Excel(name = "Operation")

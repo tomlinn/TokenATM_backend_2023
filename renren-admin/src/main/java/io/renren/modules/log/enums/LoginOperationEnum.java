@@ -8,12 +8,6 @@
 
 package io.renren.modules.log.enums;
 
-/**
- * 登录操作枚举
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 public enum LoginOperationEnum {
     /**
      * 用户登录

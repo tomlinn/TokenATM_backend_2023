@@ -51,11 +51,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * 登录
- * 
- * @author Mark sunlightcs@gmail.com
- */
 @RestController
 @Api(tags="登录管理")
 public class LoginController {

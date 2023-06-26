@@ -24,12 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 异常日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Service
 public class SysLogErrorServiceImpl extends BaseServiceImpl<SysLogErrorDao, SysLogErrorEntity> implements SysLogErrorService {
 

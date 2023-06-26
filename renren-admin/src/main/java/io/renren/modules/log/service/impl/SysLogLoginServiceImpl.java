@@ -25,12 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 登录日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Service
 public class SysLogLoginServiceImpl extends BaseServiceImpl<SysLogLoginDao, SysLogLoginEntity> implements SysLogLoginService {
 

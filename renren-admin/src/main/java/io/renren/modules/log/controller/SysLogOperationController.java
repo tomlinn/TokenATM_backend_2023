@@ -33,12 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * 操作日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @RestController
 @RequestMapping("sys/log/operation")
 @Api(tags="Operation Log")

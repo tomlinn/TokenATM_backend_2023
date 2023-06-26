@@ -17,12 +17,6 @@ import io.renren.modules.log.entity.SysLogErrorEntity;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 异常日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 public interface SysLogErrorService extends BaseService<SysLogErrorEntity> {
 
     PageData<SysLogErrorDTO> page(Map<String, Object> params);

@@ -16,12 +16,6 @@ import io.renren.modules.log.entity.SysLogOperationEntity;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 操作日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 public interface SysLogOperationService extends BaseService<SysLogOperationEntity> {
 
     PageData<SysLogOperationDTO> page(Map<String, Object> params);

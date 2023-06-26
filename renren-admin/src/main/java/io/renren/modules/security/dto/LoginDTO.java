@@ -15,11 +15,6 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
-/**
- * 登录表单
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Data
 @ApiModel(value = "登录表单")
 public class LoginDTO implements Serializable {

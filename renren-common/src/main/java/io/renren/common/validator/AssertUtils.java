@@ -18,12 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 校验工具类
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 public class AssertUtils {
 
     public static void isBlank(String str, String... params) {

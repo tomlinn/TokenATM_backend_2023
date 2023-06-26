@@ -13,11 +13,6 @@ import io.renren.modules.security.entity.SysUserTokenEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-/**
- * 系统用户Token
- * 
- * @author Mark sunlightcs@gmail.com
- */
 @Mapper
 public interface SysUserTokenDao extends BaseDao<SysUserTokenEntity> {
 

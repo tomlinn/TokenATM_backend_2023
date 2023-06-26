@@ -16,12 +16,6 @@ import io.renren.modules.log.entity.SysLogLoginEntity;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 登录日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 public interface SysLogLoginService extends BaseService<SysLogLoginEntity> {
 
     PageData<SysLogLoginDTO> page(Map<String, Object> params);
