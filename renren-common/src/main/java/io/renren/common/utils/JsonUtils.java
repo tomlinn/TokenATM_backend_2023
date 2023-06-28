@@ -8,11 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * JSON 工具类
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 public class JsonUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

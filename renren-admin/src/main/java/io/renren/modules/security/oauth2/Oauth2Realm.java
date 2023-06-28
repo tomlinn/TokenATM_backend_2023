@@ -26,11 +26,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Set;
 
-/**
- * 认证
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Component
 public class Oauth2Realm extends AuthorizingRealm {
     @Autowired

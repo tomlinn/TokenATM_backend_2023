@@ -16,11 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-/**
- * 公共字段，自动填充值
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 @Component
 public class FieldMetaObjectHandler implements MetaObjectHandler {
     private final static String CREATE_DATE = "createDate";

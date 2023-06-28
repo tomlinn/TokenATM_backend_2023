@@ -19,11 +19,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Http
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 public class HttpContextUtils {
 
 	public static HttpServletRequest getHttpServletRequest() {

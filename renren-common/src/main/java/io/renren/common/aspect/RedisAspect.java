@@ -18,11 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-/**
- * Redis切面处理类
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 @Aspect
 @Component
 public class RedisAspect {

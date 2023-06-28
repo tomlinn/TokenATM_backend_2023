@@ -29,11 +29,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 
-/**
- * 操作日志，切面处理类
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Aspect
 @Component
 public class LogOperationAspect {

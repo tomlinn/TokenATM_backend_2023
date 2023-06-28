@@ -15,11 +15,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 分页工具类
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 @Data
 @ApiModel(value = "分页数据")
 public class PageData<T> implements Serializable {

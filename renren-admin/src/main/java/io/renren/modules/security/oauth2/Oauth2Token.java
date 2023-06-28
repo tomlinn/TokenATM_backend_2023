@@ -10,11 +10,7 @@ package io.renren.modules.security.oauth2;
 
 import org.apache.shiro.authc.AuthenticationToken;
 
-/**
- * token
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 public class Oauth2Token implements AuthenticationToken {
     private String token;
 

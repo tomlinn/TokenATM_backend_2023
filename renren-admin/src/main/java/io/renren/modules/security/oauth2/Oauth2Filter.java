@@ -26,11 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * oauth2过滤器
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 public class Oauth2Filter extends AuthenticatingFilter {
 
     @Override
