@@ -20,11 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 日期转换
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Component
 public class DateConverter implements Converter<String, Date> {
     private static final Logger logger = LoggerFactory.getLogger(DateConverter.class);

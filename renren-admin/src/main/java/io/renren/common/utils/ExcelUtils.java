@@ -23,11 +23,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-/**
- * excel工具类
- *
- * @author Mark sunlightcs@gmail.com
- */
 public class ExcelUtils {
 
     /**

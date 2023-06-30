@@ -15,11 +15,6 @@ import io.renren.modules.security.entity.SysUserTokenEntity;
 import java.util.List;
 import java.util.Set;
 
-/**
- * shiro相关接口
- *
- * @author Mark sunlightcs@gmail.com
- */
 public interface ShiroService {
     /**
      * 获取用户权限列表

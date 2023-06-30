@@ -8,11 +8,6 @@
 
 package io.renren.common.constant;
 
-/**
- * 常量
- *
- * @author Mark sunlightcs@gmail.com
- */
 public interface Constant {
     /**
      * 成功

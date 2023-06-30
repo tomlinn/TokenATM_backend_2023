@@ -11,11 +11,6 @@ package io.renren.common.exception;
 
 import io.renren.common.utils.MessageUtils;
 
-/**
- * 自定义异常
- *
- * @author Mark sunlightcs@gmail.com
- */
 public class RenException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 

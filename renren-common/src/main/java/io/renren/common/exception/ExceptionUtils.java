@@ -12,11 +12,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-/**
- * Exception工具类
- *
- * @author Mark sunlightcs@gmail.com
- */
 public class ExceptionUtils {
 
     /**

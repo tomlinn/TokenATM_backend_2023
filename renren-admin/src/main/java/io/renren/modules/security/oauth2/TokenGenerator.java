@@ -13,11 +13,6 @@ import io.renren.common.exception.RenException;
 import java.security.MessageDigest;
 import java.util.UUID;
 
-/**
- * 生成token
- *
- * @author Mark sunlightcs@gmail.com
- */
 public class TokenGenerator {
 
     public static String generateValue() {

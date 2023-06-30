@@ -27,12 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 
-/**
- * 异常处理器
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @RestControllerAdvice
 public class RenExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(RenExceptionHandler.class);

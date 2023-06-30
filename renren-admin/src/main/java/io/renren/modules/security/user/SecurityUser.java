@@ -11,11 +11,6 @@ package io.renren.modules.security.user;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
-/**
- * 用户
- *
- * @author Mark sunlightcs@gmail.com
- */
 public class SecurityUser {
 
     public static Subject getSubject() {

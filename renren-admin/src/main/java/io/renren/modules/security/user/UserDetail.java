@@ -13,11 +13,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 登录用户信息
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Data
 public class UserDetail implements Serializable {
     private static final long serialVersionUID = 1L;

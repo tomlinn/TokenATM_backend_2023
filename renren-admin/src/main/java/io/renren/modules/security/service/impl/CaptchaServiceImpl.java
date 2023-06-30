@@ -23,11 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 验证码
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
     @Autowired

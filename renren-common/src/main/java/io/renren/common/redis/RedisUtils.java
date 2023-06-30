@@ -17,11 +17,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Redis工具类
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Component
 public class RedisUtils {
     @Autowired
