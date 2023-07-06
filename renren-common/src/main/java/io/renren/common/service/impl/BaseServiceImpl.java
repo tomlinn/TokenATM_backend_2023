@@ -35,11 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-/**
- * 基础服务类，所有Service都要继承
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 public abstract class BaseServiceImpl<M extends BaseMapper<T>, T>  implements BaseService<T> {
     @Autowired
     protected M baseDao;

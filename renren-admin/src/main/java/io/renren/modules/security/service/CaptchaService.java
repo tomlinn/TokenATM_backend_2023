@@ -11,11 +11,7 @@ package io.renren.modules.security.service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * 验证码
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 public interface CaptchaService {
 
     /**

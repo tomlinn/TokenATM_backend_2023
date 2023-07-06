@@ -16,11 +16,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 基础实体类，所有实体都需要继承
- *
- * @author Mark sunlightcs@gmail.com
- */
+
 @Data
 public abstract class BaseEntity implements Serializable {
     /**
