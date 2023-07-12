@@ -536,6 +536,7 @@ public class EarnServiceI implements EarnService {
 
     @Override
     public UseTokenResponse approve_token_use(RequestEntity request) throws IOException, BadRequestException, JSONException {
+        // TODO filter out student, ONLY allows TA or admin to perform
         Date current_time = new Date();
         String title = "Resubmission";
         Date due =  new Date(current_time.getTime() + 24*60*60*1000);
